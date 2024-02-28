@@ -53,7 +53,6 @@ export default function Component() {
       mobileNumber: phoneNumber,
     }).unwrap();
     storeUserInfo({ accessToken: res?.data?.accessToken });
-    console.log(res, "resres");
   };
 
   const { accountType } = getUserInfo() as any;
