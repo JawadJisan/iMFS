@@ -151,8 +151,8 @@ export default function Component() {
                 <FormItem>
                   <FormControl>
                     <Input
-                      placeholder="Mobile Number"
                       {...field}
+                      placeholder="Mobile Number"
                       type="number"
                     />
                   </FormControl>

@@ -53,6 +53,11 @@ const Page = () => {
     (user: any) => user.accountType === "agent" && user.status === "pending"
   );
 
+  const cahsRequestUser = users?.users?.filter(
+    (user: any) =>
+      user.accountType === "agent" && user?.cashRequest === "requested"
+  );
+
   return (
     <>
       <div className="w-full mx-auto p-6 bg-white rounded-lg shadow-md">
@@ -69,6 +74,7 @@ const Page = () => {
             <h3 className="text-lg font-medium">Total Money</h3>
             <p className="text-2xl font-semibold">{totalBalance} </p>
           </Card>
+
           <Link href="/dashboard/approvalRequests">
             <Card className="flex flex-col items-center justify-center p-4 bg-[#FFF3E0] text-center rounded-lg">
               <ClockIcon className="text-[#FB8C00] mb-2" />
@@ -84,6 +90,16 @@ const Page = () => {
               <FileWarningIcon className="text-[#FF5252] mb-2" />
               <h3 className="text-lg font-medium">Total Users</h3>
               <p className="text-2xl font-semibold">{users?.users?.length} </p>
+            </Card>
+          </Link>
+
+          <Link href="/dashboard/cashRquest">
+            <Card className="flex flex-col items-center justify-center p-4 bg-yellow-200 text-center rounded-lg">
+              <ClockIcon className="text-[#FB8C00] mb-2" />
+              <h3 className="text-lg font-medium">Cash Request </h3>
+              <p className="text-2xl font-semibold">
+                {cahsRequestUser?.length}
+              </p>
             </Card>
           </Link>
         </div>

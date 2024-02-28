@@ -6,7 +6,7 @@ import { userLoginSchema } from "@/lib/validator";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { FiGithub, FiFacebook } from "react-icons/fi";
 import { SlSocialGoogle } from "react-icons/sl";
@@ -31,7 +31,7 @@ export default function Component() {
   const [errorMessage, setErrorMessage] = useState("");
   const [phoneNumber, setPhoneNumber] = useState<number | undefined>();
   const [password, setpassword] = useState("");
-  const [signIn, { isLoading }] = useSignInMutation();
+  const [signIn, { isLoading, isSuccess, data, status }] = useSignInMutation();
   const [showPassword, setShowPassword] = useState(false);
   const { toast } = useToast();
 
@@ -41,42 +41,45 @@ export default function Component() {
 
   const router = useRouter();
 
-  // async function onSubmit(values: z.infer<typeof userLoginSchema>) {
-  // async function onSubmit(e) {
+  // const isLo = localStorage?.getItem("accessToken");
+  // if (!isLo == null) {
+  //   console.log("user logedIn");
+  // }
+  // console.log(isLo);
   const onSubmit = async (e: any) => {
     e.preventDefault();
-    console.log(phoneNumber, password);
-    try {
-      const res = await signIn({
-        password: password,
-        mobileNumber: phoneNumber,
-      }).unwrap();
-
-      storeUserInfo({ accessToken: res?.data?.accessToken });
-
-      if (res?.data?.accessToken) {
-        router.push("/");
-        const userinfo = getUserInfo() as any;
-        console.log(userinfo, "userRole");
-        // message.success("User logged in successfully");
-        // if (role === "customer") {
-        //   router.push("/my-profile");
-        // }
-        // if (role === "admin") {
-        //   router.push("/admin/myProfile");
-        // }
-        // if (role === "super_admin") {
-        //   router.push("/super-admin/my-profile");
-        // }
-        // if (role === "team_member") {
-        //   router.push("/team-member/my-profile");
-        // }
-      }
-    } catch (error) {
-      setErrorMessage("something went wrong");
-      // console.log(error?.message);
-    }
+    const res = await signIn({
+      password: password,
+      mobileNumber: phoneNumber,
+    }).unwrap();
+    storeUserInfo({ accessToken: res?.data?.accessToken });
+    console.log(res, "resres");
   };
+
+  const { accountType } = getUserInfo() as any;
+
+  useEffect(() => {
+    if (status == "rejected") {
+      toast({
+        title: "Error",
+        description: "Something Went Wrong.",
+        variant: "destructive",
+      });
+      setErrorMessage("something went wrong");
+    }
+
+    if (accountType === "admin" && status == "fulfilled") {
+      router.push("/dashboard/admin");
+    } else if (accountType === "agent" && status == "fulfilled") {
+      router.push("/dashboard/agent");
+    } else if (accountType === "user" && status == "fulfilled") {
+      router.push("/dashboard/user");
+    }
+
+    if (isLoading) {
+      <p>Loading...</p>;
+    }
+  }, [data, status, accountType, isLoading]);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -136,6 +139,7 @@ export default function Component() {
                   <FormControl>
                     <Input
                       required
+                      // pattern="^\d{5}$"
                       placeholder="Enter Your 5 Digit Pin Number"
                       {...field}
                       type="password"

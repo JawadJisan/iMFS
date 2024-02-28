@@ -23,6 +23,7 @@ import Link from "next/link";
 export function DropdownMenuDemo() {
   const router = useRouter();
   const logOut = () => {
+    localStorage.removeItem("accessToken");
     removeUserInfo(authKey);
     router.push("/auth/signIn");
   };

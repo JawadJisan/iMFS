@@ -22,7 +22,10 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import Link from "next/link";
-import { useGetNotificationQuery } from "@/redux/api/transactionsAPI";
+import {
+  useGetNotificationQuery,
+  useRequestCashMutation,
+} from "@/redux/api/transactionsAPI";
 import { useToast } from "@/components/ui/use-toast";
 
 export default function Component() {
@@ -31,6 +34,9 @@ export default function Component() {
   const { PNumber, accountType, email }: any = getUserInfo();
   const { data } = useUserQuery(email);
   const { data: notificationData } = useGetNotificationQuery({});
+  const [requestCash] = useRequestCashMutation();
+
+  console.log(data);
 
   const [number, setNumber] = useState();
   const [amount, setAmount] = useState();
@@ -57,6 +63,16 @@ export default function Component() {
       title: "You Coudnt Perform Any Operation until you got Approved",
       variant: "destructive",
       description: "Please Wail Until Admin Approved Your Account",
+    });
+  };
+  const handleRequest = () => {
+    requestCash({
+      agentNumber: data?.data?.mobileNumber,
+    });
+    toast({
+      title: "Your Cash Request is Successfull",
+      variant: "default",
+      description: "Please Wail Until Admin Approved Your Request",
     });
   };
 
@@ -160,6 +176,17 @@ export default function Component() {
               See Transactions
             </Button>
           </Link>{" "}
+        </Card>
+        <Card className="flex flex-col items-center justify-center p-4 bg-slate-200 text-center rounded-lg">
+          <MegaphoneIcon className="text-[#43A047] mb-2" />
+          {/* <Link href="/dashboard/cashIn"> */}
+          <Button
+            onClick={handleRequest}
+            className="bg-yellow-200 text-lg p-5 font-medium"
+            variant="outline"
+          >
+            Request For Cash
+          </Button>
         </Card>
       </div>
     </div>

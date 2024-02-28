@@ -39,6 +39,24 @@ export const transactionsAPI = baseApi.injectEndpoints({
 
       // invalidatesTags: [tagTypes.availableService],
     }),
+    requestCash: builder.mutation({
+      query: (data) => ({
+        url: `${transactions}/request-cash`,
+        method: "POST",
+        data,
+      }),
+
+      // invalidatesTags: [tagTypes.availableService],
+    }),
+    approvedRequestCash: builder.mutation({
+      query: (data) => ({
+        url: `${transactions}/approved-cash-request`,
+        method: "POST",
+        data,
+      }),
+
+      // invalidatesTags: [tagTypes.availableService],
+    }),
     cashOut: builder.mutation({
       query: (data) => ({
         url: `${transactions}/cash-out`,
@@ -57,4 +75,6 @@ export const {
   useCashOutMutation,
   useCashInMutation,
   useGetAllTnxQuery,
+  useRequestCashMutation,
+  useApprovedRequestCashMutation,
 } = transactionsAPI;
