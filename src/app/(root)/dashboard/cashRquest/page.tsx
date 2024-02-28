@@ -72,7 +72,7 @@ export default function TableDemo() {
       user.accountType === "agent" && user?.cashRequest === "requested"
   );
 
-  const handleAccept = (datas) => {
+  const handleAccept = (datas: any) => {
     console.log(datas);
     approvedRequestCash({
       agentNumber: datas?.mobileNumber,
